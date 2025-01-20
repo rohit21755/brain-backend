@@ -1,32 +1,18 @@
-import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
-interface User {
-    id: string;
-}
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization;
-    if (!token) {
-        return res.status(401).send({
-            message: "No token provided"
-        });
-    }
-    try {
-        const decoded = jwt.verify(token as string, "secret");
-        if(decoded) {
-            if(typeof decoded == 'string') {
-                return res.status(401).send({
-                    message: "Invalid token"
-                });
-            }
-            // @ts-ignore
-            req.userId  = (decoded as JwtPayload).id;
-            next();
+import { NextFunction, Request, Response } from "express";
+import jwt, { JwtPayload} from "jsonwebtoken";
+
+const secret = "secret";
+export const authMiddleware = (req: Request, res: Response, next: NextFunction)=> {
+    const header = req.headers.authorization;
+    const decoded = jwt.verify(header as string, secret);
+    if(decoded) {
+        if(typeof decoded === "string") {
+            res.status(401).json({message: "You  are not authorized to access this route"});
+            return;
         }
-     
-       
-    } catch (err) {
-        res.status(401).send({
-            message: "Invalid token"
-        });
+        req.userId = (decoded as JwtPayload).id;
+        next();
+    } else {
+        res.status(401).json({message: "You  are not authorized to access this route"});
     }
 }
