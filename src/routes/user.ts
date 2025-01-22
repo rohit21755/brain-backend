@@ -15,7 +15,7 @@ router.post('/signup', async(req,res)=>{
 }catch(err){
     console.log(err);
     res.status(500).send({
-        message: "Error creating user"
+        message: "Uesr Already Exists"
     });
 }
 })

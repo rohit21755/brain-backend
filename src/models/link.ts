@@ -7,7 +7,7 @@ const linkSchema = new Schema({
         type: String,
         required: true,
     },
-    userId: { type: ObjectId, ref: 'User', required: true },
+    userId: { type: ObjectId, ref: 'User', required: true, unique: true },
 })
 
 export default mongoose.model('Link', linkSchema);
